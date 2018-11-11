@@ -1,0 +1,3 @@
+[submodule "robot_rest_api/libs/pybililive"]
+	path = robot_rest_api/libs/pybililive
+	url = git@github.com:elfgzp/pybililive.git
