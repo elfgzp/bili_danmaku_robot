@@ -108,3 +108,6 @@ venv.bak/
 
 # OSX
 .DS_store
+
+# db
+db.sqlite3*
