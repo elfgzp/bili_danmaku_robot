@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'chatterbot.ext.django_chatterbot',
     'rest_framework',
     'rest_framework_jwt',
+    'danmaku_robot',
     'robot_rest_api'
 ]
 
@@ -142,3 +143,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+

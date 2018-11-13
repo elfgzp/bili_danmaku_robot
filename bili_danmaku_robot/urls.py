@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import url
@@ -23,3 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^api/', include(api_urls))
 ]
+
+# settings.ROBOT_PROCESS = multiprocessing.Process(target=test_bililive.run, args=())
+# settings.ROBOT_PROCESS.daemon = True
+# settings.ROBOT_PROCESS.start()
