@@ -43,6 +43,11 @@ INSTALLED_APPS = [
     'robot_rest_api'
 ]
 
+# Session
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+SESSION_COOKIE_AGE = 60 * 300
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -142,5 +147,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+STATIC_URL = '/static/'

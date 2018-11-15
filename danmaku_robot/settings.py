@@ -22,3 +22,12 @@ class Settings(object):
             raise AttributeError
 
         RobotSettings.set_setting_value(key, value, default_type=self._settings[key])
+
+    def values(self):
+        return {
+            key: getattr(self, key)
+            for key in self._settings.keys()
+        }
+
+    def fields(self):
+        return [key for key in self._settings.keys()]

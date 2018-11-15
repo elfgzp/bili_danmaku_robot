@@ -52,4 +52,6 @@ class RobotSettings(models.Model):
         setting, created = cls.objects.get_or_create(name=name)
         if created:
             setting.value, setting.type = value, default_type
+        else:
+            setting.value = value
         setting.save()
