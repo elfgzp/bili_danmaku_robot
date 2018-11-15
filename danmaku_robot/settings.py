@@ -7,7 +7,8 @@ from danmaku_robot.models import RobotSettings
 class Settings(object):
     _settings = dict([
         ('room_id', 'int'),
-        ('cookie', 'str')
+        ('cookie', 'str'),
+        ('question_prefix', 'str')
     ])
 
     def __getattr__(self, item):
