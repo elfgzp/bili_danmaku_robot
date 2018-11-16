@@ -77,8 +77,10 @@ class Robot(object):
             danmaku.content)
         )
         question_prefix = self.settings.question_prefix
-        if self.settings.question_robot and danmaku.content.startswith(question_prefix if question_prefix else ''):
-            await self.handle_question(danmaku.content)
+        if self.client._user_name and self.client._user_name != danmaku.user_info[1]:
+            if self.settings.question_robot and danmaku.content.startswith(
+                    question_prefix if question_prefix else ''):
+                await self.handle_question(danmaku.content)
 
     async def handle_question(self, question):
         if question != self.last_answer:
@@ -95,14 +97,18 @@ class Robot(object):
         gift_name = message['data']['giftName']
         num = message['data']['num']
         print('{} 送出了 {}x{}'.format(user_name, gift_name, num))
-        gift = GiftModel(
-            publisher_uid=uid,
-            publisher_name=user_name,
-            gift_id=gift_id,
-            gift_name=gift_name
-        )
-        if self.settings.thank_gift:
-            self.put_gift(gift)
+        if self.client._user_name:
+            if gift_id in self.settings.merge_thank_gift.split(','):
+                gift = GiftModel(
+                    publisher_uid=uid,
+                    publisher_name=user_name,
+                    gift_id=gift_id,
+                    gift_name=gift_name
+                )
+                if self.settings.thank_gift:
+                    self.put_gift(gift)
+            else:
+                self.client.send_danmu('感谢{}送出的{}x{}'.format(user_name, gift_name, num))
 
     async def consume_gift(self):
         while True:
