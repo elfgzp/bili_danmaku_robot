@@ -12,7 +12,9 @@ urlpatterns = [
     path('token', obtain_jwt_token, name='token'),
     path('settings', SettingsAPIView.as_view(), name='settings'),
     path('responses', ResponsesViewSet.as_view({'get': 'list', 'post': 'create'}), name='response_list'),
-    path('responses/<int:pk>', ResponsesViewSet.as_view({'get': 'retrieve'}), name='response_detail'),
+    path('responses/<int:pk>', ResponsesViewSet.as_view(
+        {'get': 'retrieve', 'delete': 'destroy'}),
+         name='response_detail'),
     path('statements/<int:parent_lookup_statement__pk>/responses',
          ResponsesViewSet.as_view({'get': 'list'}),
          name='statement_response_list'),

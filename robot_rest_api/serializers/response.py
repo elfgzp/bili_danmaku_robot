@@ -8,10 +8,12 @@ from chatterbot.ext.django_chatterbot.models import Response
 class ResponseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Response
+        read_only = ('created_at',)
         fields = (
             'id',
             'statement_id', 'statement',
-            'response_id', 'response'
+            'response_id', 'response',
+            'created_at'
         )
 
     statement_id = serializers.PrimaryKeyRelatedField(

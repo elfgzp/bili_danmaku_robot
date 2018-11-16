@@ -23,6 +23,7 @@ class ResponsesViewSet(NestedViewSetMixin, ModelViewSet):
     queryset = ResponseModel.objects.all()
     serializer_class = ResponseSerializer
     pagination_class = APIPagination
+    search_fields = ('response__text', 'statement__text')
     robot = ChatBot(**settings.CHATTERBOT, read_only=True)
     robot.set_trainer(ListTrainer)
 
