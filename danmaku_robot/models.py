@@ -49,7 +49,7 @@ class RobotSettings(models.Model):
 
     @classmethod
     def set_setting_value(cls, name, value, default_type):
-        setting, created = cls.objects.get_or_create(name=name)
+        setting, created = cls.objects.get_or_create(name=name, type=default_type)
         if created:
             setting.value, setting.type = value, default_type
         else:

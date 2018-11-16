@@ -78,5 +78,4 @@ class Robot(object):
     async def handle_question(self, question):
         answer = self.robot.get_response(question)
         if not answer == question:
-            print(answer.confidence)
-            print(answer)
+            await self.client.send_danmu(answer)
