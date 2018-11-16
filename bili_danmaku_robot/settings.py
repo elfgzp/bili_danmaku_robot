@@ -45,7 +45,7 @@ INSTALLED_APPS = [
 
 # Session
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
-SESSION_COOKIE_AGE = 60 * 300
+SESSION_COOKIE_AGE = 60 * 60 * 60 * 24
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 REST_FRAMEWORK = {
