@@ -16,13 +16,12 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-from django.conf.urls import url
 
 from robot_rest_api import urls as api_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url(r'^api/', include(api_urls))
+    path('api/', include(api_urls))
 ]
 
 # settings.ROBOT_PROCESS = multiprocessing.Process(target=test_bililive.run, args=())

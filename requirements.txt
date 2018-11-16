@@ -2,6 +2,7 @@ chatterbot==0.8.7
 django==2.1.3
 djangorestframework-jwt==1.11.0
 djangorestframework==3.9.0
+drf-extensions==0.4.0
 psycopg2-binary==2.7.6
 aiohttp==2.3.2
 async-timeout==2.0.0

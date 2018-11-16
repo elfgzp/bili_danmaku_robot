@@ -6,6 +6,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
+from rest_framework_extensions.mixins import NestedViewSetMixin
+
 from chatterbot.ext.django_chatterbot.models import Response as ResponseModel
 from chatterbot.trainers import ListTrainer
 
@@ -16,7 +18,7 @@ from robot_rest_api.serializers.response import ResponseSerializer
 from robot_rest_api.paginations import APIPagination
 
 
-class ResponsesViewSet(ModelViewSet):
+class ResponsesViewSet(NestedViewSetMixin, ModelViewSet):
     permission_classes = (IsAuthenticated,)
     queryset = ResponseModel.objects.all()
     serializer_class = ResponseSerializer
