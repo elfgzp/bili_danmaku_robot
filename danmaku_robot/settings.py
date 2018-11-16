@@ -8,7 +8,10 @@ class Settings(object):
     _settings = dict([
         ('room_id', 'int'),
         ('cookie', 'str'),
-        ('question_prefix', 'str')
+        ('question_prefix', 'str'),
+        ('confidence', 'float'),
+        ('question_robot', 'bool'),
+        ('thank_gift', 'bool')
     ])
 
     def __getattr__(self, item):

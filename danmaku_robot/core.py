@@ -14,6 +14,7 @@ from chatterbot import ChatBot
 
 from danmaku_robot.libs.pybililive.bililive import BiliLive
 from danmaku_robot.libs.pybililive.definitions import Danmaku
+from danmaku_robot.definitions import GiftModel, GiftQueue
 from danmaku_robot.settings import Settings
 
 _logger = logging.getLogger(__name__)
@@ -23,10 +24,13 @@ class Robot(object):
     def __init__(self, **kwargs):
         self.settings = Settings()
         self.client = None
+        self.gift_queue = GiftQueue()
+        self._gift_consumer = None
         self.last_answer = ''
         self.robot = ChatBot(**settings.CHATTERBOT, read_only=True)
         self.cmd_func_dict = {
-            'DANMU_MSG': self.handle_danmaku_msg
+            'DANMU_MSG': self.handle_danmaku_msg,
+            'SEND_GIFT': self.handle_gift
         }
 
         super(Robot, self).__init__(**kwargs)
@@ -35,7 +39,7 @@ class Robot(object):
         while True:
             if not self.client or (self.client and self.settings_changed(self.client)):
                 loop = asyncio.get_event_loop()
-
+                self._gift_consumer = asyncio.ensure_future(self.consume_gift())
                 self.client = BiliLive(
                     room_id=self.settings.room_id,
                     user_cookie=self.settings.cookie,
@@ -73,12 +77,88 @@ class Robot(object):
             danmaku.content)
         )
         question_prefix = self.settings.question_prefix
-        if danmaku.content.startswith(question_prefix if question_prefix else ''):
+        if self.settings.question_robot and danmaku.content.startswith(question_prefix if question_prefix else ''):
             await self.handle_question(danmaku.content)
 
     async def handle_question(self, question):
         if question != self.last_answer:
             answer = self.robot.get_response(question)
-            if answer != question:
+            print("Q: %s A: %s C: %s" % (question, answer, answer.confidence))
+            if answer != question and answer.confidence >= self.settings.confidence:
                 self.last_answer = answer
                 await self.client.send_danmu(answer.text)
+
+    async def handle_gift(self, live, message):
+        user_name = message['data']['uname']
+        uid = message['data']['uid']
+        gift_id = message['data']['giftId']
+        gift_name = message['data']['giftName']
+        num = message['data']['num']
+        print('{} 送出了 {}x{}'.format(user_name, gift_name, num))
+        gift = GiftModel(
+            publisher_uid=uid,
+            publisher_name=user_name,
+            gift_id=gift_id,
+            gift_name=gift_name
+        )
+        if self.settings.thank_gift:
+            self.put_gift(gift)
+
+    async def consume_gift(self):
+        while True:
+            try:
+
+                current_gift_count = len(self.gift_queue)
+                thanks = '感谢{}赠送的礼物~'
+                publisher_name_list = []
+                publisher_uid_set = set()
+                if current_gift_count <= 3:
+                    sleep_time = 40
+                elif current_gift_count <= 8:
+                    sleep_time = 30
+                elif current_gift_count <= 10:
+                    sleep_time = 20
+                else:
+                    sleep_time = 10
+
+                while current_gift_count > 0:
+                    gift = self.get_gift()
+
+                    # compress publisher name
+                    while gift:
+                        if gift.publisher_uid not in publisher_uid_set:
+                            publisher_name_list.append(gift.publisher_name)
+                            publisher_uid_set.add(gift.publisher_uid)
+
+                        if len(thanks.format('、'.join(publisher_name_list))) >= 30:
+                            self.put_gift(gift)
+                            publisher_name_list.pop()
+                            thanks = thanks.format('、'.join(publisher_name_list))
+                            print(thanks)
+                            if self.settings.thank_gift:
+                                await self.client.send_danmu(thanks)
+                            thanks = '感谢{}赠送的礼物~'
+                            publisher_name_list = []
+                            await asyncio.sleep(2)
+                            break
+                        gift = self.get_gift()
+                        current_gift_count -= 1
+                    else:
+                        if publisher_name_list:
+                            thanks = thanks.format('、'.join(publisher_name_list))
+                            print(thanks)
+                            if self.settings.thank_gift:
+                                await self.client.send_danmu(thanks)
+                            thanks = '感谢{}赠送的礼物~'
+                            publisher_name_list = []
+
+                await asyncio.sleep(sleep_time)
+
+            except Exception as e:
+                _logger.exception(e)
+
+    def put_gift(self, gift):
+        self.gift_queue.enqueue(gift)
+
+    def get_gift(self):
+        return self.gift_queue.dequeue()

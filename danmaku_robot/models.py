@@ -23,7 +23,8 @@ class RobotSettings(models.Model):
 
     def validate_value(self):
         try:
-            __builtins__[self.type](self.value)
+            if self.value:
+                __builtins__[self.type](self.value)
         except ValueError:
             raise ValidationError(
                 'Value type error',
@@ -33,7 +34,7 @@ class RobotSettings(models.Model):
     @property
     def clean_value(self):
         try:
-            value = __builtins__[self.type](self.value)
+            value = eval('%s("%s")' % (self.type, self.value))
         except ValueError:
             value = None
         return value
@@ -51,7 +52,7 @@ class RobotSettings(models.Model):
     def set_setting_value(cls, name, value, default_type):
         setting, created = cls.objects.get_or_create(name=name, type=default_type)
         if created:
-            setting.value, setting.type = value, default_type
+            setting.value, setting.type = str(value), default_type
         else:
-            setting.value = value
+            setting.value = str(value)
         setting.save()

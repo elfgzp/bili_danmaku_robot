@@ -21,5 +21,6 @@ class SettingsAPIView(APIView):
         for field in self._settings.fields():
             value = request.data.get(field)
             if value is not None:
+                value = value if value is not False else ''
                 setattr(self._settings, field, value)
         return Response(self._settings.values())
