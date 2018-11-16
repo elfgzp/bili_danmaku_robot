@@ -81,4 +81,4 @@ class Robot(object):
             answer = self.robot.get_response(question)
             if answer != question:
                 self.last_answer = answer
-                await self.client.send_danmu(answer)
+                await self.client.send_danmu(answer.text)
