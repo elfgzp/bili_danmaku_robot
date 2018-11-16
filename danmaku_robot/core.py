@@ -69,6 +69,7 @@ class Robot(object):
             return True
 
     async def handle_danmaku_msg(self, live, message):
+        message['name_color'] = message.get('name_color', '')
         danmaku = Danmaku(*message['info'])
         print('房间 {} {} {} 说: {}'.format(
             live.raw_room_id,
@@ -98,7 +99,7 @@ class Robot(object):
         num = message['data']['num']
         print('{} 送出了 {}x{}'.format(user_name, gift_name, num))
         if self.client._user_name:
-            if gift_id in self.settings.merge_thank_gift.split(','):
+            if str(gift_id) in self.settings.merge_thank_gift.split(','):
                 gift = GiftModel(
                     publisher_uid=uid,
                     publisher_name=user_name,
@@ -108,7 +109,7 @@ class Robot(object):
                 if self.settings.thank_gift:
                     self.put_gift(gift)
             else:
-                self.client.send_danmu('感谢{}送出的{}x{}'.format(user_name, gift_name, num))
+                await self.client.send_danmu('感谢{}送出的{}x{}'.format(user_name, gift_name, num))
 
     async def consume_gift(self):
         while True:
