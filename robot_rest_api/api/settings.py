@@ -20,6 +20,6 @@ class SettingsAPIView(APIView):
     def put(self, request, *args, **kwargs):
         for field in self._settings.fields():
             value = request.data.get(field)
-            if value:
+            if value is not None:
                 setattr(self._settings, field, value)
         return Response(self._settings.values())

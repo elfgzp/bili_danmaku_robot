@@ -23,6 +23,7 @@ class Robot(object):
     def __init__(self, **kwargs):
         self.settings = Settings()
         self.client = None
+        self.last_answer = ''
         self.robot = ChatBot(**settings.CHATTERBOT, read_only=True)
         self.cmd_func_dict = {
             'DANMU_MSG': self.handle_danmaku_msg
@@ -76,6 +77,8 @@ class Robot(object):
             await self.handle_question(danmaku.content)
 
     async def handle_question(self, question):
-        answer = self.robot.get_response(question)
-        if not answer == question:
-            await self.client.send_danmu(answer)
+        if question != self.last_answer:
+            answer = self.robot.get_response(question)
+            if answer != question:
+                self.last_answer = answer
+                await self.client.send_danmu(answer)
