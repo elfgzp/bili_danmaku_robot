@@ -68,7 +68,7 @@ class Robot(object):
             return True
 
     async def handle_danmaku_msg(self, live, message):
-        message['name_color'] = message.get('name_color', '')
+        message['info'][7] = message['info'][7] if len(message['info']) == 8 else 0
         danmaku = Danmaku(*message['info'])
         print('房间 {} {} {} 说: {}'.format(
             live.raw_room_id,
