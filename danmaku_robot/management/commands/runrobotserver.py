@@ -4,7 +4,7 @@ __author__ = 'gzp'
 import django
 import multiprocessing
 
-from django.core.management.commands.runserver import Command as RunserverCommand
+from django.contrib.staticfiles.management.commands.runserver import Command as RunserverCommand
 
 from danmaku_robot.core import Robot
 
@@ -14,7 +14,6 @@ ROBOT_PROCESS = None
 class Command(RunserverCommand):
     def run(self, **options):
         options['use_reloader'] = False
-        django.setup()
         self.run_robot()
         super(Command, self).run(**options)
 
