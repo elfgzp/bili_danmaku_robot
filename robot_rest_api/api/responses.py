@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 __author__ = 'gzp'
 
+import django_filters
+
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -18,11 +20,21 @@ from robot_rest_api.serializers.response import ResponseSerializer
 from robot_rest_api.paginations import APIPagination
 
 
+class ResponseFilter(django_filters.rest_framework.FilterSet):
+    statement__text = django_filters.CharFilter(lookup_expr='contains')
+    response__text = django_filters.CharFilter(lookup_expr='contains')
+
+    class Meta:
+        model = ResponseModel
+        fields = ('statement__text', 'response__text')
+
+
 class ResponsesViewSet(NestedViewSetMixin, ModelViewSet):
     permission_classes = (IsAuthenticated,)
     queryset = ResponseModel.objects.all()
     serializer_class = ResponseSerializer
     pagination_class = APIPagination
+    filter_class = ResponseFilter
     search_fields = ('response__text', 'statement__text')
     ordering_fields = '__all__'
     robot = ChatBot(**settings.CHATTERBOT, read_only=True)
