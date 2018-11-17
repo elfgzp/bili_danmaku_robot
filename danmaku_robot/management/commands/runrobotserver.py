@@ -14,6 +14,7 @@ ROBOT_PROCESS = None
 class Command(RunserverCommand):
     def run(self, **options):
         options['use_reloader'] = False
+        django.setup()
         self.run_robot()
         super(Command, self).run(**options)
 

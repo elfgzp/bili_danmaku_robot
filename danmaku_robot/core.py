@@ -26,7 +26,6 @@ class Robot(object):
         self.client = None
         self.gift_queue = GiftQueue()
         self._gift_consumer = None
-        self.last_answer = ''
         self.robot = ChatBot(**settings.CHATTERBOT, read_only=True)
         self.cmd_func_dict = {
             'DANMU_MSG': self.handle_danmaku_msg,
@@ -78,18 +77,16 @@ class Robot(object):
             danmaku.content)
         )
         question_prefix = self.settings.question_prefix
-        if self.client._user_name and self.client._user_name != danmaku.user_info[1]:
+        if self.settings.robot_self_debug or self.client._user_name and self.client._user_name != danmaku.user_info[1]:
             if self.settings.question_robot and danmaku.content.startswith(
                     question_prefix if question_prefix else ''):
                 await self.handle_question(danmaku.content)
 
     async def handle_question(self, question):
-        if question != self.last_answer:
-            answer = self.robot.get_response(question)
-            print("Q: %s A: %s C: %s" % (question, answer, answer.confidence))
-            if answer != question and answer.confidence >= self.settings.confidence:
-                self.last_answer = answer
-                await self.client.send_danmu(answer.text)
+        answer = self.robot.get_response(question)
+        print("Q: %s A: %s C: %s" % (question, answer, answer.confidence))
+        if answer != question and answer.confidence >= self.settings.confidence:
+            await self.client.send_danmu(answer.text)
 
     async def handle_gift(self, live, message):
         user_name = message['data']['uname']

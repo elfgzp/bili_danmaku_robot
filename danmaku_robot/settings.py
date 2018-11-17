@@ -11,6 +11,7 @@ class Settings(object):
         ('question_prefix', 'str'),
         ('confidence', 'float'),
         ('question_robot', 'bool'),
+        ('robot_self_debug', 'bool'),
         ('merge_thank_gift', 'str'),
         ('thank_gift', 'bool')
     ])
