@@ -24,6 +24,3 @@ urlpatterns = [
     path('api/', include(api_urls))
 ]
 
-# settings.ROBOT_PROCESS = multiprocessing.Process(target=test_bililive.run, args=())
-# settings.ROBOT_PROCESS.daemon = True
-# settings.ROBOT_PROCESS.start()

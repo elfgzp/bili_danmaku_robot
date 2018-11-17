@@ -52,6 +52,7 @@ JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=30),
     'JWT_ALLOW_REFRESH': True,
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=30),
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'robot_rest_api.utils.jwt_response_payload_handler'
 }
 
 TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
@@ -73,10 +74,6 @@ REST_FRAMEWORK = {
     'DATETIME_FORMAT': TIME_FORMAT,
 }
 
-JWT_AUTH = {
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=300),
-    'JWT_RESPONSE_PAYLOAD_HANDLER': 'robot_rest_api.utils.jwt_response_payload_handler'
-}
 
 CHATTERBOT = {
     'name': 'Django ChatterBot Example',
