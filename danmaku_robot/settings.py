@@ -9,6 +9,7 @@ class Settings(object):
         ('room_id', 'int'),
         ('cookie', 'str'),
         ('question_prefix', 'str'),
+        ('answer_prefix', 'str'),
         ('confidence', 'float'),
         ('question_robot', 'bool'),
         ('robot_self_debug', 'bool'),
